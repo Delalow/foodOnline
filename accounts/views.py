@@ -1,10 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .forms import UserForm
-from .models import User
+from .models import User, UserProfile
 from django.contrib import messages
 from vendor.forms import VendorForm
-
 # Create your views here.
 
 def registerUser(request):
@@ -14,7 +13,7 @@ def registerUser(request):
             # password = form.cleaned_data['password']
             # user = form.save(commit=False)
             # user.set_password(password)
-            # user.role = User.COSTUMER
+            # user.role = User.CUSTOMER
             # user.save()
 
             #Create the user using create_user method
@@ -24,7 +23,7 @@ def registerUser(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
-            user.role = User.COSTUMER
+            user.role = User.CUSTOMER
             user.save()
             messages.success(request, 'Your account has been registered successfully')
             return redirect('registerUser')
@@ -50,13 +49,14 @@ def registerVendor(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
-            user.role = User.RESTAURANT
-            user.save() #Quando o usuário é salvo, já irá criar o profile por contado do signals.
+            user.role = User.VENDOR
             vendor = v_form.save(commit=False)
             vendor.user = user
-            user_profile = User.objects.get(user=user)
+            user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
+            messages.success(request, 'Your account has been registered successfully! Please, wait for the approval')
+            return redirect('registerVendor')
         else:
             print('invalid form validation')
             print(form.errors)

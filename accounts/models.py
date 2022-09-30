@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.fields.related import OneToOneField
 
-from vendor.models import Vendor
 
 
 # Create your models here.
@@ -42,11 +41,11 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     VENDOR = 1
-    COSTUMER = 2
+    CUSTOMER = 2
     
     ROLE_CHOICES = (
-        (VENDOR, 'Restaurant'),
-        (COSTUMER, 'Costumer'),
+        (VENDOR, 'Vendor'),
+        (CUSTOMER, 'Customer'),
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
