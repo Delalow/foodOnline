@@ -5,7 +5,21 @@ from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.forms import VendorForm
 from .utils import detectUser
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
 # Create your views here.
+
+def check_role_vendor(user):
+    if user.role == 1:
+        return True
+    else:
+        raise PermissionDenied
+
+def check_role_customer(user):
+    if user.role == 2:
+        return True
+    else:
+        raise PermissionDenied
 
 def registerUser(request):
     if request.user.is_authenticated:
@@ -104,14 +118,18 @@ def logout(request):
     messages.info(request, 'You are not logged out.')
     return redirect('login')
 
+@login_required(login_url='login')
 def myAccount(request):
     user = request.user
     redirectUrl = detectUser(user)
     return redirect(redirectUrl)
 
+@user_passes_test(check_role_customer)
+@login_required(login_url='login')
 def custDashboard(request):
     return render(request, 'accounts/custDashboard.html')   
 
-    
+@user_passes_test(check_role_vendor)
+@login_required(login_url='login')  
 def vendorDashboard(request):
     return render(request, 'accounts/vendorDashboard.html')   

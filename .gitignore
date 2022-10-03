@@ -3,7 +3,12 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
 #files
-static
+#static
+#!css
+
+static/*
+!static/css/
+
 
 
 ### Django ###
